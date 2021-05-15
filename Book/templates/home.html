@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book</title>
+</head>
+<body>
+    <h1 style="color:red">Book Home Page</h1>
+<!-- 
+    {% for i in books %}
+    {{forloop.counter}}
+
+    {{i.name}}<br>
+
+    {% endfor %} -->
+
+    <h3>Book Form </h3>
+    <form action="/save_book/" method="POST">
+        {% csrf_token %} 
+        {% if book %}
+        Book ID  <input type="text"  value="{{book.id}}" name="id" readonly><br><br>
+        {% endif %}
+        Book Name  <input type="text" value="{{book.name}}" name="name" required><br><br>
+        Book Author <input type="text" value="{{book.author}}" name="auth"required><br><br>
+        Book Quantity <input type="number" value="{{book.qty}}" name="qty"required><br><br>
+        Book Price<input type="number" value="{{book.price}}" name="price"required><br><br>
+        {% if book.is_published %}
+            Book Published <input type="checkbox" name="pub" checked><br><br>
+        {% else %}
+            Book Published <input type="checkbox" name="pub" ><br><br>
+        {% endif %}
+        {% if book.low_priced%}
+            Low Priced Edition is available:<input type="radio" name="lpe" checked> Available
+               <input type="radio" name="lpe">Not Available
+        {% else %}
+            Low Priced Edition is available:<input type="radio" name="lpe"> Available
+               <input type="radio" name="lpe" checked>Not Available
+        {%endif%}
+        {% if book %}
+        <input type="submit" value="Update Data">
+        {% else %}
+        <input type="submit" value="Save Data">
+        {% endif %}        
+    </form>
+
+    <hr>
+    <h3> ALL BOOKS INFORMATION </h3><a href="/Show_deleted_data/">Show Deleted Data</a> |<a href="/home/">Home </a><a href="/delete_all/">|Delete All Data|</a> <a href="/restore_all/">|Restore All Data|</a>
+    <table border="1">
+        <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Is Published</th>
+            <th>Low Priced Edition Available</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for i in books %}
+                <tr>
+                    <td>{{i.id}}</td>
+                    <td>{{i.name}}</td>
+                    <td>{{i.author}}</td>
+                    <td>{{i.qty}}</td>
+                    <td>{{i.price}}</td>
+                    <td>{{i.is_published}}</td>
+                    <td>{{i.low_priced}}</td>
+                    <td>
+                        
+                        {% ifequal i.is_deleted "Y" %} |
+                        <a href="/permanant_delete_book/{{i.id}}/" >Delete Record Permanantly</a>
+                        <a href="/restore/{{i.id}}/" >Restore</a>
+                        {% endifequal %}
+                        {% ifequal i.is_deleted "N" %}
+                        <a href="/delete_book/{{i.id}}/" >Delete</a>
+                        <a href="/edit_book/{{i.id}}/" >Edit</a>
+                        {% endifequal %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</body>
+</html>
